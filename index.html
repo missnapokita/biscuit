@@ -3,318 +3,259 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>BIDAMAX Admin Pro v5</title>
-<style>
-:root{
-  --bg:#050505;--side:#08080b;--card:#121217;--card2:#19191f;--line:#2b2b34;
-  --red:#e50914;--red2:#ff3845;--text:#fff;--muted:#aaa;--ok:#22c55e;--bad:#ef4444;--warn:#f59e0b;
-}
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,Helvetica,sans-serif;background:radial-gradient(circle at top,#250508,#070707 45%,#000);color:var(--text)}
-button,input,textarea,select{font:inherit}
-.app{display:flex;min-height:100vh}
-.sidebar{width:260px;background:var(--side);border-right:1px solid var(--line);padding:18px;position:fixed;inset:0 auto 0 0;overflow:auto;z-index:10}
-.logo{font-size:28px;font-weight:900;color:var(--red);letter-spacing:1px}
-.sub{font-size:12px;color:var(--muted);margin-top:4px}
-.nav-title{font-size:11px;color:#777;margin:22px 0 8px;font-weight:900}
-.nav button{width:100%;border:0;background:transparent;color:#ddd;text-align:left;padding:12px;border-radius:13px;margin:3px 0;cursor:pointer}
-.nav button.active,.nav button:hover{background:#1a1a20;color:#fff}
-.main{margin-left:260px;width:calc(100% - 260px);padding:18px}
-.top{display:flex;gap:12px;align-items:center;margin-bottom:18px;position:sticky;top:0;background:linear-gradient(#080808,#080808dd);padding:8px 0;z-index:5}
-.search{flex:1;background:#101014;border:1px solid var(--line);color:#fff;border-radius:16px;padding:13px}
-.status{background:#101014;border:1px solid var(--line);border-radius:16px;padding:13px;color:#aaa;white-space:nowrap}
-.section{display:none}.section.active{display:block}
-h1{margin:0 0 14px;font-size:34px}h2{margin:0 0 12px}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.card{background:linear-gradient(180deg,#15151a,#0d0d10);border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:14px;box-shadow:0 10px 30px #0008}
-.card.click{cursor:pointer;transition:.15s}.card.click:hover{border-color:var(--red);transform:translateY(-2px)}
-.num{font-size:30px;font-weight:900}.label{font-size:13px;color:var(--muted);margin-top:6px}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-input,textarea,select{width:100%;background:#0d0d11;border:1px solid #33333b;color:#fff;border-radius:13px;padding:12px;margin-top:7px}
-textarea{min-height:95px;resize:vertical}
-label{display:block;margin-top:11px;color:#ccc;font-size:13px}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
-.btn{border:0;background:linear-gradient(90deg,var(--red2),var(--red));color:white;border-radius:13px;padding:12px 14px;font-weight:900;cursor:pointer}
-.btn.dark{background:#202027;border:1px solid #363640}
-.btn.ok{background:linear-gradient(90deg,#16a34a,#22c55e)}
-.btn.bad{background:linear-gradient(90deg,#991b1b,#ef4444)}
-.btn:disabled{opacity:.5}
-.preview{background:#070709;border:1px solid #24242a;border-radius:14px;padding:12px;white-space:pre-wrap;font-family:monospace;color:#ddd;max-height:310px;overflow:auto;font-size:12px}
-.list{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
-.item{background:#101014;border:1px solid #292932;border-radius:17px;overflow:hidden}
-.poster{width:100%;height:230px;object-fit:cover;background:#08080a;display:block}
-.item .info{padding:10px}.title{font-weight:900;font-size:14px}.meta{font-size:12px;color:#999;margin-top:4px;line-height:1.35}
-.item .mini{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap}.item .mini button{flex:1;min-width:70px;padding:8px;border-radius:10px;font-size:12px}
-.file-row{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid #282832;background:#101014;border-radius:14px;padding:11px;margin:8px 0}
-.toast{position:fixed;right:18px;bottom:18px;background:#111116;border:1px solid #33333b;padding:14px;border-radius:15px;display:none;z-index:50;max-width:90vw}
-.pill{display:inline-block;border:1px solid #333;background:#1a1a20;border-radius:999px;padding:6px 9px;font-size:12px;color:#bbb;margin:3px}
-.empty{color:#999;padding:12px}
-@media(max-width:850px){
-  .sidebar{position:relative;width:100%;height:auto}
-  .app{display:block}.main{margin-left:0;width:100%}
-  .grid{grid-template-columns:1fr 1fr}.row{grid-template-columns:1fr}
-  h1{font-size:30px}.poster{height:190px}.top{position:relative}
-}
-</style>
+<title>BIDAMAX Admin Pro v7</title>
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <div class="app">
-<aside class="sidebar">
-  <div class="logo">BIDAMAX</div>
-  <div class="sub">Admin Pro v5 • Real database structure</div>
-  <div class="nav">
-    <div class="nav-title">MAIN</div>
-    <button class="active" onclick="showSec('dashboard',this)">🏠 Dashboard</button>
-    <div class="nav-title">CONTENT</div>
-    <button onclick="showSec('movies',this)">🎬 Movies</button>
-    <button onclick="showSec('series',this)">📺 Series</button>
-    <button onclick="showSec('seasons',this)">📚 Seasons</button>
-    <button onclick="showSec('episodes',this)">▶ Episodes</button>
-    <div class="nav-title">TOOLS</div>
-    <button onclick="showSec('tmdb',this)">🤖 TMDB Import</button>
-    <button onclick="showSec('files',this)">📂 GitHub Files</button>
-    <button onclick="showSec('updater',this)">🔄 App Updater</button>
-    <button onclick="showSec('announce',this)">📢 Announcement</button>
-    <div class="nav-title">SETTINGS</div>
-    <button onclick="showSec('settings',this)">⚙️ GitHub Settings</button>
-  </div>
-</aside>
+  <aside class="sidebar">
+    <div class="logo">BIDAMAX</div>
+    <div class="sub">Admin Pro v7 • Modular CMS</div>
 
-<main class="main">
-  <div class="top">
-    <input id="globalSearch" class="search" placeholder="Search by TITLE only..." oninput="filterCards()">
-    <div id="connStatus" class="status">⚪ Not connected</div>
-  </div>
+    <div class="nav">
+      <div class="nav-title">MAIN</div>
+      <button class="active" data-section="dashboard">🏠 Dashboard</button>
 
-  <section id="dashboard" class="section active">
-    <h1>Dashboard</h1>
-    <div class="grid">
-      <div class="card click" onclick="openSec('movies')"><div class="num" id="statMovies">0</div><div class="label">Movies from database/movies.json</div></div>
-      <div class="card click" onclick="openSec('series')"><div class="num" id="statSeries">0</div><div class="label">Series from database/series.json</div></div>
-      <div class="card click" onclick="openSec('seasons')"><div class="num" id="statSeasons">0</div><div class="label">Season files</div></div>
-      <div class="card click" onclick="openSec('episodes')"><div class="num" id="statEpisodes">0</div><div class="label">Episode files</div></div>
-    </div>
-    <div class="card">
-      <h2>Quick Start</h2>
-      <span class="pill">Search uses Title</span><span class="pill">Files use tmdbID internally</span><span class="pill">movies.json array</span><span class="pill">series.json array</span>
-      <div class="actions"><button class="btn" onclick="loadAll()">LOAD ALL DATA</button><button class="btn dark" onclick="openSec('settings')">OPEN SETTINGS</button></div>
-    </div>
-    <div class="card"><h2>Activity</h2><div class="preview" id="activityLog">No activity yet.</div></div>
-  </section>
+      <div class="nav-title">CONTENT</div>
+      <button data-section="movies">🎬 Movies</button>
+      <button data-section="series">📺 Series</button>
+      <button data-section="seasons">📚 Seasons</button>
+      <button data-section="episodes">▶ Episodes</button>
 
-  <section id="movies" class="section">
-    <h1>Movies Manager</h1>
-    <div class="actions">
-      <button class="btn" onclick="clearMovieForm()">New Movie</button>
-      <button class="btn ok" onclick="saveMovie()">Save to movies.json</button>
-      <button class="btn dark" onclick="loadMovies()">Load Movies</button>
-      <button class="btn dark" onclick="previewMovie()">Preview</button>
+      <div class="nav-title">TOOLS</div>
+      <button data-section="tmdb">🤖 TMDB Import</button>
+      <button data-section="files">📂 GitHub Files</button>
+      <button data-section="updater">🔄 App Updater</button>
+      <button data-section="announce">📢 Announcement</button>
+
+      <div class="nav-title">SETTINGS</div>
+      <button data-section="settings">⚙️ Settings</button>
     </div>
-    <div class="row">
-      <div class="card">
-        <input id="m_index" type="hidden">
-        <label>Title</label><input id="m_Title">
-        <label>Poster</label><input id="m_Poster">
-        <label>Backdrop</label><input id="m_Backdrop">
-        <label>Logo</label><input id="m_Logo">
-        <div class="row"><div><label>tmdbID</label><input id="m_tmdbID"></div><div><label>ContentType</label><input id="m_ContentType" value="Movie"></div></div>
-        <div class="row"><div><label>Year</label><input id="m_Year"></div><div><label>Runtime</label><input id="m_Runtime"></div></div>
-        <div class="row"><div><label>Vote</label><input id="m_Vote"></div><div><label>Language/Country</label><input id="m_Language"></div></div>
-        <label>Genres</label><input id="m_Genres">
-        <label>Trailer</label><input id="m_Trailer">
-        <label>Link</label><input id="m_Link">
-        <label>Overview</label><textarea id="m_Overview"></textarea>
+  </aside>
+
+  <main class="main">
+    <div class="top">
+      <input id="globalSearch" class="search" placeholder="Search title only...">
+      <div id="connStatus" class="status">⚪ Not connected</div>
+    </div>
+
+    <section id="dashboard" class="section active">
+      <h1>Dashboard</h1>
+      <div class="grid">
+        <div class="card click" data-open="movies"><div class="num" id="statMovies">0</div><div class="label">Movies</div></div>
+        <div class="card click" data-open="series"><div class="num" id="statSeries">0</div><div class="label">Series</div></div>
+        <div class="card click" data-open="seasons"><div class="num" id="statSeasons">0</div><div class="label">Season files</div></div>
+        <div class="card click" data-open="episodes"><div class="num" id="statEpisodes">0</div><div class="label">Episode files</div></div>
       </div>
-      <div class="card"><h2>Movie JSON</h2><div id="moviePreview" class="preview">No data yet.</div></div>
-    </div>
-    <div class="card"><h2>Uploaded Movies</h2><div id="moviesList" class="list">Tap Load Movies.</div></div>
-  </section>
 
-  <section id="series" class="section">
-    <h1>Series Manager</h1>
-    <div class="actions">
-      <button class="btn" onclick="clearSeriesForm()">New Series</button>
-      <button class="btn ok" onclick="saveSeries()">Save to series.json</button>
-      <button class="btn dark" onclick="loadSeries()">Load Series</button>
-      <button class="btn dark" onclick="previewSeries()">Preview</button>
-    </div>
-    <div class="row">
       <div class="card">
-        <input id="s_index" type="hidden">
-        <label>Title</label><input id="s_Title">
-        <label>Poster</label><input id="s_Poster">
-        <label>Backdrop</label><input id="s_Backdrop">
-        <label>Logo</label><input id="s_Logo">
-        <div class="row"><div><label>tmdbID</label><input id="s_tmdbID"></div><div><label>ContentType</label><input id="s_ContentType" value="Series"></div></div>
-        <div class="row"><div><label>NumberOfSeasons</label><input id="s_NumberOfSeasons"></div><div><label>NumberOfEpisodes</label><input id="s_NumberOfEpisodes"></div></div>
-        <div class="row"><div><label>Year</label><input id="s_Year"></div><div><label>Runtime</label><input id="s_Runtime"></div></div>
-        <div class="row"><div><label>Vote</label><input id="s_Vote"></div><div><label>Language/Country</label><input id="s_Language"></div></div>
-        <label>Genres</label><input id="s_Genres">
-        <label>Trailer</label><input id="s_Trailer">
-        <label>Overview</label><textarea id="s_Overview"></textarea>
+        <h2>Quick Actions</h2>
+        <div class="actions">
+          <button class="btn" id="loadAllBtn">LOAD ALL DATA</button>
+          <button class="btn dark" data-open="settings">OPEN SETTINGS</button>
+          <button class="btn dark" data-open="tmdb">TMDB IMPORT</button>
+        </div>
       </div>
-      <div class="card"><h2>Series JSON</h2><div id="seriesPreview" class="preview">No data yet.</div></div>
-    </div>
-    <div class="card"><h2>Uploaded Series</h2><div id="seriesList" class="list">Tap Load Series.</div></div>
-  </section>
 
-  <section id="seasons" class="section">
-    <h1>Season Manager</h1>
-    <div class="card">
-      <label>Search series by Title</label><input id="seasonSearch" oninput="renderSeriesPicker('season')" placeholder="Example: Goblin">
-      <div id="seasonPicker" class="list"></div>
-    </div>
-    <div class="card">
-      <h2 id="seasonTitle">Select a series</h2>
-      <div class="actions"><button class="btn dark" onclick="loadSelectedSeasons()">Load seasons/{tmdbID}.json</button><button class="btn ok" onclick="saveSelectedSeasons()">Save seasons file</button></div>
-      <div id="seasonEditor" class="preview">No season file loaded.</div>
-    </div>
-  </section>
-
-  <section id="episodes" class="section">
-    <h1>Episode Manager</h1>
-    <div class="card">
-      <label>Search series by Title</label><input id="episodeSearch" oninput="renderSeriesPicker('episode')" placeholder="Example: One Piece">
-      <div id="episodePicker" class="list"></div>
-    </div>
-    <div class="card">
-      <h2 id="episodeTitle">Select a series</h2>
-      <div class="actions"><button class="btn dark" onclick="loadSelectedEpisodes()">Load episodes/{tmdbID}.json</button><button class="btn ok" onclick="saveSelectedEpisodes()">Save episodes file</button></div>
-      <div id="episodeEditor" class="preview">No episode file loaded.</div>
-    </div>
-  </section>
-
-  <section id="tmdb" class="section">
-    <h1>TMDB Import</h1>
-    <div class="card">
-      <label>TMDB API Key</label><input id="tmdbKey">
-      <div class="row"><div><label>Type</label><select id="tmdbType"><option value="movie">Movie</option><option value="tv">Series</option></select></div><div><label>TMDB ID</label><input id="tmdbId"></div></div>
-      <div class="actions"><button class="btn" onclick="importTmdb()">IMPORT TO FORM</button><button class="btn dark" onclick="saveTmdbKey()">SAVE API KEY</button></div>
-      <div id="tmdbPreview" class="preview">TMDB preview here.</div>
-    </div>
-  </section>
-
-  <section id="files" class="section">
-    <h1>GitHub Files</h1>
-    <div class="card">
-      <label>Folder path</label><input id="filePath" value="database">
-      <div class="actions"><button class="btn dark" onclick="browseFiles()">Browse</button></div>
-      <div id="fileList">No files loaded.</div>
-    </div>
-  </section>
-
-  <section id="updater" class="section">
-    <h1>App Updater</h1>
-    <div class="row">
       <div class="card">
-        <label>Visibility</label><select id="v_Visibility"><option>true</option><option>false</option></select>
-        <label>ForceUpdate</label><select id="v_ForceUpdate"><option>false</option><option>true</option></select>
-        <label>VersionName</label><input id="v_VersionName">
-        <label>VersionCode</label><input id="v_VersionCode">
-        <label>Title</label><input id="v_Title">
-        <label>Description</label><textarea id="v_Description"></textarea>
-        <label>DownloadLink</label><input id="v_DownloadLink">
-        <div class="actions"><button class="btn dark" onclick="loadVersion()">Load</button><button class="btn ok" onclick="saveVersion()">Save</button></div>
+        <h2>Activity</h2>
+        <div class="preview" id="activityLog">No activity yet.</div>
       </div>
-      <div class="card"><h2>Preview</h2><div id="versionPreview" class="preview">No data.</div></div>
-    </div>
-  </section>
+    </section>
 
-  <section id="announce" class="section">
-    <h1>Announcement</h1>
-    <div class="row">
+    <section id="movies" class="section">
+      <h1>Movies</h1>
+      <div class="actions">
+        <button class="btn" id="newMovieBtn">+ New Movie</button>
+        <button class="btn dark" id="loadMoviesBtn">Load Movies</button>
+        <button class="btn ok" id="saveMoviesBtn">Save movies.json</button>
+      </div>
+      <div class="card"><div id="moviesList" class="list">Tap Load Movies.</div></div>
+    </section>
+
+    <section id="series" class="section">
+      <h1>Series</h1>
+      <div class="actions">
+        <button class="btn" id="newSeriesBtn">+ New Series</button>
+        <button class="btn dark" id="loadSeriesBtn">Load Series</button>
+        <button class="btn ok" id="saveSeriesBtn">Save series.json</button>
+      </div>
+      <div class="card"><div id="seriesList" class="list">Tap Load Series.</div></div>
+    </section>
+
+    <section id="seasons" class="section">
+      <h1>Seasons</h1>
       <div class="card">
-        <label>Visibility</label><select id="a_Visibility"><option>true</option><option>false</option></select>
-        <label>Title</label><input id="a_Title">
-        <label>Message</label><textarea id="a_Message"></textarea>
-        <label>Image</label><input id="a_Image">
-        <label>ButtonText</label><input id="a_ButtonText">
-        <label>ButtonLink</label><input id="a_ButtonLink">
-        <div class="actions"><button class="btn dark" onclick="loadAnnouncement()">Load</button><button class="btn ok" onclick="saveAnnouncement()">Save</button></div>
+        <label>Search Series Title</label>
+        <input id="seasonSearch" placeholder="Example: Goblin">
+        <div id="seasonPicker" class="list compact"></div>
       </div>
-      <div class="card"><h2>Preview</h2><div id="announcePreview" class="preview">No data.</div></div>
-    </div>
-  </section>
 
-  <section id="settings" class="section">
-    <h1>GitHub Settings</h1>
-    <div class="card">
-      <label>GitHub Token</label><input id="ghToken" type="password">
-      <div class="row"><div><label>Owner</label><input id="ghOwner" value="mlbb-injector"></div><div><label>Repo</label><input id="ghRepo" value="maui"></div></div>
-      <div class="row"><div><label>Branch</label><input id="ghBranch" value="main"></div><div><label>Database Folder</label><input id="ghFolder" value="database"></div></div>
-      <div class="actions"><button class="btn ok" onclick="saveSettings()">Save Settings</button><button class="btn dark" onclick="testConnection()">Test Connection</button><button class="btn dark" onclick="loadAll()">Load All</button></div>
-    </div>
-  </section>
-</main>
+      <div class="card">
+        <h2 id="seasonTitle">Select a series</h2>
+        <div class="actions">
+          <button class="btn dark" id="loadSeasonsBtn">Load seasons/{tmdbID}.json</button>
+          <button class="btn ok" id="saveSeasonsBtn">Save Seasons</button>
+        </div>
+        <div id="seasonVisualList" class="episode-list"></div>
+        <div class="preview" id="seasonRaw" contenteditable="true">No season file loaded.</div>
+      </div>
+    </section>
+
+    <section id="episodes" class="section">
+      <h1>Episodes</h1>
+      <div class="card">
+        <label>Search Series Title</label>
+        <input id="episodeSearch" placeholder="Example: One Piece">
+        <div id="episodePicker" class="list compact"></div>
+      </div>
+
+      <div class="card">
+        <h2 id="episodeTitle">Select a series</h2>
+        <div class="actions">
+          <button class="btn dark" id="loadEpisodesBtn">Load episodes/{tmdbID}.json</button>
+          <button class="btn ok" id="saveEpisodesBtn">Save Episodes</button>
+        </div>
+        <div id="episodeVisualList" class="episode-list"></div>
+        <div class="preview" id="episodeRaw" contenteditable="true">No episode file loaded.</div>
+      </div>
+    </section>
+
+    <section id="tmdb" class="section">
+      <h1>TMDB Import</h1>
+      <div class="card">
+        <label>TMDB API Key</label>
+        <input id="tmdbKey" placeholder="TMDB API Key">
+
+        <div class="row">
+          <div>
+            <label>Type</label>
+            <select id="tmdbType">
+              <option value="movie">Movie</option>
+              <option value="tv">Series</option>
+            </select>
+          </div>
+          <div>
+            <label>TMDB ID</label>
+            <input id="tmdbId" placeholder="1399">
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn" id="importTmdbBtn">IMPORT TO FORM</button>
+          <button class="btn dark" id="saveTmdbKeyBtn">SAVE API KEY</button>
+        </div>
+
+        <div id="tmdbPreview" class="preview">TMDB preview here.</div>
+      </div>
+    </section>
+
+    <section id="files" class="section">
+      <h1>GitHub Files</h1>
+      <div class="card">
+        <label>Folder path</label>
+        <input id="filePath" value="database">
+        <div class="actions">
+          <button class="btn dark" id="browseFilesBtn">Browse</button>
+        </div>
+        <div id="fileList">No files loaded.</div>
+      </div>
+    </section>
+
+    <section id="updater" class="section">
+      <h1>App Updater</h1>
+      <div class="row">
+        <div class="card form-card" id="versionForm"></div>
+        <div class="card">
+          <h2>Preview</h2>
+          <div id="versionPreview" class="preview">No data.</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn dark" id="loadVersionBtn">Load version.json</button>
+        <button class="btn ok" id="saveVersionBtn">Save version.json</button>
+      </div>
+    </section>
+
+    <section id="announce" class="section">
+      <h1>Announcement</h1>
+      <div class="row">
+        <div class="card form-card" id="announcementForm"></div>
+        <div class="card">
+          <h2>Preview</h2>
+          <div id="announcePreview" class="preview">No data.</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn dark" id="loadAnnouncementBtn">Load announcement.json</button>
+        <button class="btn ok" id="saveAnnouncementBtn">Save announcement.json</button>
+      </div>
+    </section>
+
+    <section id="settings" class="section">
+      <h1>Settings</h1>
+      <div class="card">
+        <label>GitHub Token</label>
+        <input id="ghToken" type="password" placeholder="github_pat_xxx">
+
+        <div class="row">
+          <div>
+            <label>Owner</label>
+            <input id="ghOwner" value="mlbb-injector">
+          </div>
+          <div>
+            <label>Repo</label>
+            <input id="ghRepo" value="maui">
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label>Branch</label>
+            <input id="ghBranch" value="main">
+          </div>
+          <div>
+            <label>Database Folder</label>
+            <input id="ghFolder" value="database">
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn ok" id="saveSettingsBtn">Save Settings</button>
+          <button class="btn dark" id="testConnectionBtn">Test Connection</button>
+          <button class="btn dark" id="settingsLoadAllBtn">Load All</button>
+        </div>
+      </div>
+    </section>
+  </main>
 </div>
+
+<div class="modal" id="editorModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2 id="modalTitle">Editor</h2>
+      <button class="icon-btn" id="closeModalBtn">✕</button>
+    </div>
+
+    <div id="modalForm" class="modal-form"></div>
+
+    <div class="actions">
+      <button class="btn ok" id="modalSaveBtn">SAVE</button>
+      <button class="btn dark" id="modalDuplicateBtn">DUPLICATE</button>
+      <button class="btn bad" id="modalDeleteBtn">DELETE</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast" class="toast"></div>
 
-<script>
-const $=id=>document.getElementById(id);
-let movies=[],series=[],moviesSha=null,seriesSha=null,selectedSeries=null,seasonJson=null,seasonSha=null,episodeJson=null,episodeSha=null,versionSha=null,announceSha=null;
-
-function log(msg){$("activityLog").textContent=new Date().toLocaleTimeString()+" - "+msg+"\\n"+$("activityLog").textContent}
-function toast(msg){$("toast").textContent=msg;$("toast").style.display="block";setTimeout(()=>$("toast").style.display="none",3000);log(msg)}
-function showSec(id,btn){document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));$(id)?.classList.add("active");if(btn)btn.classList.add("active")}
-function openSec(id){const b=[...document.querySelectorAll(".nav button")].find(x=>(x.getAttribute("onclick")||"").includes("'"+id+"'"));showSec(id,b)}
-function cfg(){return{token:$("ghToken").value.trim(),owner:$("ghOwner").value.trim(),repo:$("ghRepo").value.trim(),branch:$("ghBranch").value.trim()||"main",folder:$("ghFolder").value.trim()||"database"}}
-function saveSettings(){const c=cfg();Object.keys(c).forEach(k=>localStorage.setItem("bm5_"+k,c[k]));toast("Settings saved")}
-function loadSettings(){["token","owner","repo","branch","folder"].forEach(k=>{let v=localStorage.getItem("bm5_"+k);let el=$("gh"+k[0].toUpperCase()+k.slice(1));if(v&&el)el.value=v});$("tmdbKey").value=localStorage.getItem("tmdbKey")||""}
-function saveTmdbKey(){localStorage.setItem("tmdbKey",$("tmdbKey").value.trim());toast("TMDB key saved")}
-loadSettings();
-
-function apiPath(path){const c=cfg();return `https://api.github.com/repos/${c.owner}/${c.repo}/contents/${encodeURIComponent(path).replaceAll("%2F","/")}`}
-async function gh(path,method="GET",body=null){const c=cfg();let opt={method,headers:{Authorization:`Bearer ${c.token}`,Accept:"application/vnd.github+json"}};if(body){opt.headers["Content-Type"]="application/json";opt.body=JSON.stringify(body)}let res=await fetch(apiPath(path)+(method==="GET"?"?ref="+encodeURIComponent(c.branch):""),opt);if(!res.ok)throw new Error(method+" "+path+" failed "+res.status+" "+(await res.text()).slice(0,140));return await res.json()}
-function b64(s){return btoa(unescape(encodeURIComponent(s)))}
-function fromb64(s){return decodeURIComponent(escape(atob((s||"").replace(/\n/g,""))))}
-async function getJson(path){let j=await gh(path);return{json:JSON.parse(fromb64(j.content)),sha:j.sha,path:j.path}}
-async function putJson(path,data,sha=null){const c=cfg();let body={message:"Update "+path,content:b64(JSON.stringify(data,null,2)),branch:c.branch};if(sha)body.sha=sha;return await gh(path,"PUT",body)}
-async function testConnection(){try{saveSettings();const c=cfg();let r=await fetch(`https://api.github.com/repos/${c.owner}/${c.repo}`,{headers:{Authorization:`Bearer ${c.token}`,Accept:"application/vnd.github+json"}});if(!r.ok)throw new Error(r.status);$("connStatus").textContent="🟢 Connected";toast("GitHub connected")}catch(e){$("connStatus").textContent="🔴 Failed";toast(e.message)}}
-
-function collect(prefix,fields){let o={};fields.forEach(f=>{let v=$(prefix+f)?.value?.trim()||""; if(v!=="")o[f]=v});return o}
-function fill(prefix,data,fields){fields.forEach(f=>{let el=$(prefix+f); if(el)el.value=data?.[f]??""})}
-const movieFields=["Title","Poster","Backdrop","Logo","tmdbID","ContentType","Year","Runtime","Vote","Language","Genres","Trailer","Link","Overview"];
-const seriesFields=["Title","Poster","Backdrop","Logo","tmdbID","ContentType","NumberOfSeasons","NumberOfEpisodes","Year","Runtime","Vote","Language","Genres","Trailer","Overview"];
-function movieData(){return collect("m_",movieFields)}
-function seriesData(){return collect("s_",seriesFields)}
-function previewMovie(){$("moviePreview").textContent=JSON.stringify(movieData(),null,2)}
-function previewSeries(){$("seriesPreview").textContent=JSON.stringify(seriesData(),null,2)}
-function clearMovieForm(){$("m_index").value="";fill("m_",{},movieFields);$("m_ContentType").value="Movie";previewMovie()}
-function clearSeriesForm(){$("s_index").value="";fill("s_",{},seriesFields);$("s_ContentType").value="Series";previewSeries()}
-
-async function loadMovies(){try{let c=cfg();$("moviesList").textContent="Loading movies.json...";let r=await getJson(`${c.folder}/movies.json`);movies=Array.isArray(r.json)?r.json:[];moviesSha=r.sha;$("statMovies").textContent=movies.length;renderMovies();toast("Movies loaded")}catch(e){$("moviesList").textContent="Failed to load movies.json";toast(e.message)}}
-async function loadSeries(){try{let c=cfg();$("seriesList").textContent="Loading series.json...";let r=await getJson(`${c.folder}/series.json`);series=Array.isArray(r.json)?r.json:[];seriesSha=r.sha;$("statSeries").textContent=series.length;renderSeries();renderSeriesPicker("season");renderSeriesPicker("episode");toast("Series loaded")}catch(e){$("seriesList").textContent="Failed to load series.json";toast(e.message)}}
-function itemCard(d,type,i){let img=d.Poster||d.poster||d.Image||"";let title=d.Title||d.title||d.name||"Untitled";let sub=[d.Year,d.Genres,d.Language].filter(Boolean).join(" • ");let extra=type==="series"?`<button class="btn dark" onclick="selectSeriesByIndex(${i},'season')">Seasons</button><button class="btn dark" onclick="selectSeriesByIndex(${i},'episode')">Episodes</button>`:"";return `<div class="item data-card" data-title="${escapeHtml(title.toLowerCase())}"><img class="poster" src="${escapeHtml(img)}" onerror="this.style.display='none'"><div class="info"><div class="title">${escapeHtml(title)}</div><div class="meta">${escapeHtml(sub)}</div><div class="mini"><button class="btn dark" onclick="editItem('${type}',${i})">Edit</button><button class="btn bad" onclick="deleteItem('${type}',${i})">Delete</button>${extra}</div></div></div>`}
-function renderMovies(){let q=$("globalSearch").value.toLowerCase();$("moviesList").innerHTML=movies.map((m,i)=>({m,i,t:(m.Title||"").toLowerCase()})).filter(x=>!q||x.t.includes(q)).map(x=>itemCard(x.m,"movie",x.i)).join("")||"<div class='empty'>No movies found.</div>"}
-function renderSeries(){let q=$("globalSearch").value.toLowerCase();$("seriesList").innerHTML=series.map((s,i)=>({s,i,t:(s.Title||"").toLowerCase()})).filter(x=>!q||x.t.includes(q)).map(x=>itemCard(x.s,"series",x.i)).join("")||"<div class='empty'>No series found.</div>"}
-function filterCards(){renderMovies();renderSeries()}
-function escapeHtml(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
-
-function editItem(type,i){if(type==="movie"){fill("m_",movies[i],movieFields);$("m_index").value=i;previewMovie();openSec("movies")}else{fill("s_",series[i],seriesFields);$("s_index").value=i;previewSeries();openSec("series")}toast("Loaded for edit")}
-async function saveMovie(){try{let c=cfg(),data=movieData();if(!data.Title)return toast("Title required");let i=$("m_index").value;if(i===""){movies.unshift(data)}else{movies[Number(i)]=data}await putJson(`${c.folder}/movies.json`,movies,moviesSha);toast("movies.json saved");await loadMovies()}catch(e){toast(e.message)}}
-async function saveSeries(){try{let c=cfg(),data=seriesData();if(!data.Title)return toast("Title required");let i=$("s_index").value;if(i===""){series.unshift(data)}else{series[Number(i)]=data}await putJson(`${c.folder}/series.json`,series,seriesSha);toast("series.json saved");await loadSeries()}catch(e){toast(e.message)}}
-async function deleteItem(type,i){if(!confirm("Delete this item?"))return;try{let c=cfg();if(type==="movie"){movies.splice(i,1);await putJson(`${c.folder}/movies.json`,movies,moviesSha);await loadMovies()}else{series.splice(i,1);await putJson(`${c.folder}/series.json`,series,seriesSha);await loadSeries()}toast("Deleted")}catch(e){toast(e.message)}}
-
-function renderSeriesPicker(mode){let q=$(mode+"Search")?.value?.toLowerCase()||"";let box=$(mode+"Picker");if(!box)return;let arr=series.map((s,i)=>({s,i,t:(s.Title||"").toLowerCase()})).filter(x=>!q||x.t.includes(q)).slice(0,20);box.innerHTML=arr.map(x=>itemCard(x.s,mode==="season"?"pickSeason":"pickEpisode",x.i).replace(/editItem\('[^']+',\d+\)/g,`selectSeriesByIndex(${x.i},'${mode}')`).replace(/deleteItem\('[^']+',\d+\)/g,`selectSeriesByIndex(${x.i},'${mode}')`)).join("")||"<div class='empty'>No title found.</div>"}
-function selectSeriesByIndex(i,mode){selectedSeries=series[i];if(!selectedSeries)return;$(mode+"Title").textContent=(selectedSeries.Title||"Selected")+" • tmdbID: "+(selectedSeries.tmdbID||"missing");openSec(mode==="season"?"seasons":"episodes");toast("Selected: "+(selectedSeries.Title||"Series"))}
-function getSelectedId(){return selectedSeries?.tmdbID||selectedSeries?.TmdbID||selectedSeries?.id||""}
-async function loadSelectedSeasons(){try{let id=getSelectedId();if(!id)return toast("No tmdbID selected");let c=cfg();let r=await getJson(`${c.folder}/seasons/${id}.json`);seasonJson=r.json;seasonSha=r.sha;$("seasonEditor").contentEditable="true";$("seasonEditor").textContent=JSON.stringify(seasonJson,null,2);toast("Season file loaded")}catch(e){toast(e.message)}}
-async function saveSelectedSeasons(){try{let id=getSelectedId();if(!id)return toast("No tmdbID selected");let c=cfg();let data=JSON.parse($("seasonEditor").textContent);await putJson(`${c.folder}/seasons/${id}.json`,data,seasonSha);toast("Season file saved")}catch(e){toast(e.message)}}
-async function loadSelectedEpisodes(){try{let id=getSelectedId();if(!id)return toast("No tmdbID selected");let c=cfg();let r=await getJson(`${c.folder}/episodes/${id}.json`);episodeJson=r.json;episodeSha=r.sha;$("episodeEditor").contentEditable="true";$("episodeEditor").textContent=JSON.stringify(episodeJson,null,2);toast("Episode file loaded")}catch(e){toast(e.message)}}
-async function saveSelectedEpisodes(){try{let id=getSelectedId();if(!id)return toast("No tmdbID selected");let c=cfg();let data=JSON.parse($("episodeEditor").textContent);await putJson(`${c.folder}/episodes/${id}.json`,data,episodeSha);toast("Episode file saved")}catch(e){toast(e.message)}}
-
-async function countFolder(path,stat){try{let files=await gh(path);$(stat).textContent=Array.isArray(files)?files.length:0}catch(e){}}
-async function browseFiles(){try{let path=$("filePath").value.trim()||"database";let files=await gh(path);$("fileList").innerHTML=(Array.isArray(files)?files:[]).map(f=>`<div class="file-row"><div>${f.type==="dir"?"📁":"📄"} ${escapeHtml(f.name)}<div class="meta">${escapeHtml(f.path)}</div></div><button class="btn dark" onclick='$("filePath").value=${JSON.stringify(f.path)};browseFiles()'>Open</button></div>`).join("")||"Empty"}catch(e){toast(e.message)}}
-async function loadAll(){await testConnection();await loadMovies();await loadSeries();let c=cfg();await countFolder(`${c.folder}/seasons`,"statSeasons");await countFolder(`${c.folder}/episodes`,"statEpisodes")}
-
-function versionData(){return collect("v_",["Visibility","ForceUpdate","VersionName","VersionCode","Title","Description","DownloadLink"])}
-function announceData(){return collect("a_",["Visibility","Title","Message","Image","ButtonText","ButtonLink"])}
-async function loadVersion(){try{let r=await getJson("version.json");versionSha=r.sha;fill("v_",r.json,["Visibility","ForceUpdate","VersionName","VersionCode","Title","Description","DownloadLink"]);$("versionPreview").textContent=JSON.stringify(versionData(),null,2);toast("Version loaded")}catch(e){toast(e.message)}}
-async function saveVersion(){try{let data=versionData();let sha=versionSha;try{sha=(await getJson("version.json")).sha}catch(e){}await putJson("version.json",data,sha);$("versionPreview").textContent=JSON.stringify(data,null,2);toast("Version saved")}catch(e){toast(e.message)}}
-async function loadAnnouncement(){try{let r=await getJson("announcement.json");announceSha=r.sha;fill("a_",r.json,["Visibility","Title","Message","Image","ButtonText","ButtonLink"]);$("announcePreview").textContent=JSON.stringify(announceData(),null,2);toast("Announcement loaded")}catch(e){toast(e.message)}}
-async function saveAnnouncement(){try{let data=announceData();let sha=announceSha;try{sha=(await getJson("announcement.json")).sha}catch(e){}await putJson("announcement.json",data,sha);$("announcePreview").textContent=JSON.stringify(data,null,2);toast("Announcement saved")}catch(e){toast(e.message)}}
-
-async function importTmdb(){try{saveTmdbKey();let key=$("tmdbKey").value.trim(),id=$("tmdbId").value.trim(),type=$("tmdbType").value;if(!key||!id)return toast("TMDB key and ID required");let url=`https://api.themoviedb.org/3/${type}/${id}?api_key=${key}&append_to_response=videos,images`;let j=await (await fetch(url)).json();if(j.success===false)throw new Error(j.status_message);let img="https://image.tmdb.org/t/p/w500",back="https://image.tmdb.org/t/p/original";let data={Title:j.title||j.name||"",Poster:j.poster_path?img+j.poster_path:"",Backdrop:j.backdrop_path?back+j.backdrop_path:"",tmdbID:String(j.id||id),Year:(j.release_date||j.first_air_date||"").slice(0,4),Runtime:String(j.runtime||j.episode_run_time?.[0]||""),Vote:String(j.vote_average||""),Language:j.original_language||"",Genres:(j.genres||[]).map(x=>x.name).join(", "),Overview:j.overview||"",Trailer:""};let yt=(j.videos?.results||[]).find(v=>v.site==="YouTube");if(yt)data.Trailer="https://youtu.be/"+yt.key;if(type==="movie"){data.ContentType="Movie";fill("m_",data,movieFields);previewMovie();openSec("movies")}else{data.ContentType="Series";data.NumberOfSeasons=String(j.number_of_seasons||"");data.NumberOfEpisodes=String(j.number_of_episodes||"");fill("s_",data,seriesFields);previewSeries();openSec("series")}$("tmdbPreview").textContent=JSON.stringify(j,null,2);toast("TMDB imported")}catch(e){toast(e.message)}}
-</script>
+<script src="js/core.js"></script>
+<script src="js/github.js"></script>
+<script src="js/content.js"></script>
+<script src="js/seasons_episodes.js"></script>
+<script src="js/tools.js"></script>
+<script src="js/app.js"></script>
 </body>
 </html>
