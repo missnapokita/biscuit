@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BIDAMAX Admin Pro v4</title>
+<style>
+:root{
+  --bg:#050505;--panel:#0c0c0e;--card:#121216;--card2:#19191f;--line:#2a2a32;
+  --red:#e50914;--red2:#ff3845;--text:#fff;--muted:#a7a7b0;--ok:#22c55e;
+  --bad:#ef4444;--warn:#f59e0b;--blue:#38bdf8;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:radial-gradient(circle at top,#260508,#070707 45%,#000);color:var(--text)}
+button,input,textarea,select{font:inherit}
+.app{display:flex;min-height:100vh}
+.sidebar{width:260px;background:#08080a;border-right:1px solid var(--line);padding:18px;position:fixed;inset:0 auto 0 0;overflow:auto;z-index:10}
+.logo{font-size:28px;font-weight:900;color:var(--red);letter-spacing:1px}
+.sub{font-size:12px;color:var(--muted);margin-top:4px}
+.nav-title{font-size:11px;color:#777;margin:22px 0 8px;font-weight:900;letter-spacing:.5px}
+.nav button{width:100%;border:0;background:transparent;color:#ddd;text-align:left;padding:12px;border-radius:13px;margin:3px 0;cursor:pointer}
+.nav button.active,.nav button:hover{background:#1a1a20;color:#fff}
+.main{margin-left:260px;width:calc(100% - 260px);padding:18px}
+.top{display:flex;gap:12px;align-items:center;margin-bottom:18px;position:sticky;top:0;background:linear-gradient(#080808,#080808dd);padding:8px 0;z-index:5}
+.search{flex:1;background:#101014;border:1px solid var(--line);color:#fff;border-radius:16px;padding:13px}
+.status{background:#101014;border:1px solid var(--line);border-radius:16px;padding:13px;color:#aaa;white-space:nowrap}
+.section{display:none}.section.active{display:block}
+h1{margin:0 0 14px;font-size:34px}h2{margin:0 0 12px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.card{background:linear-gradient(180deg,#15151a,#0d0d10);border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:14px;box-shadow:0 10px 30px #0008}
+.card.click{cursor:pointer;transition:.15s}.card.click:hover{border-color:var(--red);transform:translateY(-2px)}
+.stat{font-size:32px;font-weight:900}.label{font-size:13px;color:var(--muted);margin-top:6px}.num{font-size:28px;font-weight:900}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+input,textarea,select{width:100%;background:#0d0d11;border:1px solid #33333b;color:#fff;border-radius:13px;padding:12px;margin-top:7px}
+textarea{min-height:95px;resize:vertical}
+label{display:block;margin-top:11px;color:#ccc;font-size:13px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.btn{border:0;background:linear-gradient(90deg,var(--red2),var(--red));color:white;border-radius:13px;padding:12px 14px;font-weight:900;cursor:pointer}
+.btn.dark{background:#202027;border:1px solid #363640}
+.btn.ok{background:linear-gradient(90deg,#16a34a,#22c55e)}
+.btn.bad{background:linear-gradient(90deg,#991b1b,#ef4444)}
+.btn:disabled{opacity:.5}
+.preview{background:#070709;border:1px solid #24242a;border-radius:14px;padding:12px;white-space:pre-wrap;font-family:monospace;color:#ddd;max-height:300px;overflow:auto;font-size:12px}
+.list{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+.item{background:#101014;border:1px solid #292932;border-radius:17px;overflow:hidden}
+.poster{width:100%;height:230px;object-fit:cover;background:#08080a;display:block}
+.item .info{padding:10px}.title{font-weight:900;font-size:14px}.meta{font-size:12px;color:#999;margin-top:4px;line-height:1.35}
+.item .mini{display:flex;gap:6px;margin-top:9px}.item .mini button{flex:1;padding:8px;border-radius:10px;font-size:12px}
+.file-row{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid #282832;background:#101014;border-radius:14px;padding:11px;margin:8px 0}
+.toast{position:fixed;right:18px;bottom:18px;background:#111116;border:1px solid #33333b;padding:14px;border-radius:15px;display:none;z-index:50;max-width:90vw}
+.pill{display:inline-block;border:1px solid #333;background:#1a1a20;border-radius:999px;padding:6px 9px;font-size:12px;color:#bbb;margin:3px}
+hr{border:0;border-top:1px solid var(--line);margin:16px 0}
+@media(max-width:850px){
+  .sidebar{position:relative;width:100%;height:auto}
+  .app{display:block}.main{margin-left:0;width:100%}
+  .grid{grid-template-columns:1fr 1fr}.row{grid-template-columns:1fr}
+  h1{font-size:30px}.poster{height:190px}.top{position:relative}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="logo">BIDAMAX</div>
+  <div class="sub">Admin Pro v4 • GitHub CMS</div>
+  <div class="nav">
+    <div class="nav-title">MAIN</div>
+    <button class="active" onclick="showSec('dashboard',this)">🏠 Dashboard</button>
+    <div class="nav-title">CONTENT</div>
+    <button onclick="showSec('movies',this)">🎬 Movies</button>
+    <button onclick="showSec('series',this)">📺 Series</button>
+    <button onclick="showSec('episodes',this)">▶ Episodes</button>
+    <div class="nav-title">TOOLS</div>
+    <button onclick="showSec('tmdb',this)">🤖 TMDB Import</button>
+    <button onclick="showSec('files',this)">📂 GitHub Files</button>
+    <button onclick="showSec('updater',this)">🔄 App Updater</button>
+    <button onclick="showSec('announce',this)">📢 Announcement</button>
+    <div class="nav-title">SETTINGS</div>
+    <button onclick="showSec('settings',this)">⚙️ GitHub Settings</button>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="top">
+    <input id="globalSearch" class="search" placeholder="Search loaded movies/series..." oninput="filterCards()">
+    <div id="connStatus" class="status">⚪ Not connected</div>
+  </div>
+
+  <section id="dashboard" class="section active">
+    <h1>Dashboard</h1>
+    <div class="grid">
+      <div class="card click" onclick="openSec('movies')"><div class="num" id="statMovies">0</div><div class="label">Movies</div></div>
+      <div class="card click" onclick="openSec('series')"><div class="num" id="statSeries">0</div><div class="label">Series</div></div>
+      <div class="card click" onclick="openSec('episodes')"><div class="num" id="statEpisodes">0</div><div class="label">Episode files</div></div>
+      <div class="card click" onclick="openSec('updater')"><div class="stat">🔄</div><div class="label">Version Manager</div></div>
+    </div>
+    <div class="card">
+      <h2>Quick Start</h2>
+      <span class="pill">1. Settings</span><span class="pill">2. Test Connection</span><span class="pill">3. Load Movies/Series</span><span class="pill">4. Save to GitHub</span>
+      <div class="actions"><button class="btn" onclick="loadAll()">LOAD ALL DATA</button><button class="btn dark" onclick="openSec('settings')">OPEN SETTINGS</button></div>
+    </div>
+    <div class="card"><h2>Recent Activity</h2><div class="preview" id="activityLog">No activity yet.</div></div>
+  </section>
+
+  <section id="movies" class="section">
+    <h1>Movies Manager</h1>
+    <div class="actions">
+      <button class="btn" onclick="clearMovieForm()">New Movie</button>
+      <button class="btn ok" onclick="saveMovie()">Save Movie</button>
+      <button class="btn dark" onclick="loadMovies()">Load Uploaded Movies</button>
+      <button class="btn dark" onclick="previewMovie()">Preview JSON</button>
+    </div>
+    <div class="row">
+      <div class="card">
+        <input id="m_editPath" type="hidden">
+        <label>Title</label><input id="m_Title" placeholder="Movie title">
+        <label>Poster URL</label><input id="m_Poster" placeholder="https://...">
+        <label>Backdrop URL</label><input id="m_Backdrop" placeholder="https://...">
+        <div class="row"><div><label>Year</label><input id="m_Year" placeholder="2026"></div><div><label>Runtime</label><input id="m_Runtime" placeholder="120 mins"></div></div>
+        <div class="row"><div><label>Vote</label><input id="m_Vote" placeholder="8.5"></div><div><label>Language/Country</label><input id="m_Language" placeholder="Korean"></div></div>
+        <label>Genres</label><input id="m_Genres" placeholder="Action, Drama">
+        <label>Trailer</label><input id="m_Trailer" placeholder="YouTube link">
+        <label>Video Link</label><input id="m_Link" placeholder="stream link">
+        <label>Overview</label><textarea id="m_Overview" placeholder="Overview..."></textarea>
+      </div>
+      <div class="card"><h2>Movie JSON</h2><div id="moviePreview" class="preview">No data yet.</div></div>
+    </div>
+    <div class="card"><h2>Uploaded Movies</h2><div id="moviesList" class="list">Tap Load Uploaded Movies.</div></div>
+  </section>
+
+  <section id="series" class="section">
+    <h1>Series Manager</h1>
+    <div class="actions">
+      <button class="btn" onclick="clearSeriesForm()">New Series</button>
+      <button class="btn ok" onclick="saveSeries()">Save Series</button>
+      <button class="btn dark" onclick="loadSeries()">Load Uploaded Series</button>
+      <button class="btn dark" onclick="previewSeries()">Preview JSON</button>
+    </div>
+    <div class="row">
+      <div class="card">
+        <input id="s_editPath" type="hidden">
+        <label>Title</label><input id="s_Title" placeholder="Series title">
+        <label>Poster URL</label><input id="s_Poster" placeholder="https://...">
+        <label>Backdrop URL</label><input id="s_Backdrop" placeholder="https://...">
+        <div class="row"><div><label>Seasons</label><input id="s_NumberOfSeasons" placeholder="1"></div><div><label>Episodes</label><input id="s_NumberOfEpisodes" placeholder="16"></div></div>
+        <div class="row"><div><label>Year</label><input id="s_Year" placeholder="2026"></div><div><label>Language/Country</label><input id="s_Language" placeholder="Korean"></div></div>
+        <label>Genres</label><input id="s_Genres" placeholder="Drama, Romance">
+        <label>Trailer</label><input id="s_Trailer" placeholder="YouTube link">
+        <label>Overview</label><textarea id="s_Overview" placeholder="Overview..."></textarea>
+      </div>
+      <div class="card"><h2>Series JSON</h2><div id="seriesPreview" class="preview">No data yet.</div></div>
+    </div>
+    <div class="card"><h2>Uploaded Series</h2><div id="seriesList" class="list">Tap Load Uploaded Series.</div></div>
+  </section>
+
+  <section id="episodes" class="section">
+    <h1>Episodes Manager</h1>
+    <div class="card">
+      <div class="actions"><button class="btn dark" onclick="loadEpisodeFiles()">Load Episode Files</button></div>
+      <div id="episodesList">Tap Load Episode Files.</div>
+    </div>
+  </section>
+
+  <section id="tmdb" class="section">
+    <h1>TMDB Import</h1>
+    <div class="card">
+      <label>TMDB API Key</label><input id="tmdbKey" placeholder="TMDB API key">
+      <div class="row"><div><label>Type</label><select id="tmdbType"><option value="movie">Movie</option><option value="tv">Series</option></select></div><div><label>TMDB ID</label><input id="tmdbId" placeholder="1399"></div></div>
+      <div class="actions"><button class="btn" onclick="importTmdb()">IMPORT</button><button class="btn dark" onclick="saveTmdbKey()">SAVE API KEY</button></div>
+      <div class="preview" id="tmdbPreview">TMDB data preview will show here.</div>
+    </div>
+  </section>
+
+  <section id="files" class="section">
+    <h1>GitHub File Browser</h1>
+    <div class="card">
+      <label>Folder path</label><input id="filePath" value="database">
+      <div class="actions"><button class="btn dark" onclick="browseFiles()">Browse</button></div>
+      <div id="fileList">No files loaded.</div>
+    </div>
+  </section>
+
+  <section id="updater" class="section">
+    <h1>App Updater</h1>
+    <div class="row">
+      <div class="card">
+        <label>Visibility</label><select id="v_Visibility"><option>true</option><option>false</option></select>
+        <label>Force Update</label><select id="v_ForceUpdate"><option>false</option><option>true</option></select>
+        <label>Version Name</label><input id="v_VersionName" placeholder="1.0.5">
+        <label>Version Code</label><input id="v_VersionCode" placeholder="5">
+        <label>Title</label><input id="v_Title" placeholder="New Update Available">
+        <label>Description</label><textarea id="v_Description"></textarea>
+        <label>Download Link</label><input id="v_DownloadLink">
+        <div class="actions"><button class="btn dark" onclick="loadVersion()">Load version.json</button><button class="btn ok" onclick="saveVersion()">Save version.json</button></div>
+      </div>
+      <div class="card"><h2>Preview</h2><div id="versionPreview" class="preview">No data.</div></div>
+    </div>
+  </section>
+
+  <section id="announce" class="section">
+    <h1>Announcement</h1>
+    <div class="row">
+      <div class="card">
+        <label>Visibility</label><select id="a_Visibility"><option>true</option><option>false</option></select>
+        <label>Title</label><input id="a_Title">
+        <label>Message</label><textarea id="a_Message"></textarea>
+        <label>Image URL</label><input id="a_Image">
+        <label>Button Text</label><input id="a_ButtonText" value="OK">
+        <label>Button Link</label><input id="a_ButtonLink">
+        <div class="actions"><button class="btn dark" onclick="loadAnnouncement()">Load announcement.json</button><button class="btn ok" onclick="saveAnnouncement()">Save announcement.json</button></div>
+      </div>
+      <div class="card"><h2>Preview</h2><div id="announcePreview" class="preview">No data.</div></div>
+    </div>
+  </section>
+
+  <section id="settings" class="section">
+    <h1>GitHub Settings</h1>
+    <div class="card">
+      <label>GitHub Token</label><input id="ghToken" type="password" placeholder="github_pat_xxx">
+      <div class="row"><div><label>Owner</label><input id="ghOwner" value="mlbb-injector"></div><div><label>Repo</label><input id="ghRepo" value="maui"></div></div>
+      <div class="row"><div><label>Branch</label><input id="ghBranch" value="main"></div><div><label>Database Folder</label><input id="ghFolder" value="database"></div></div>
+      <div class="actions"><button class="btn ok" onclick="saveSettings()">Save Settings</button><button class="btn dark" onclick="testConnection()">Test Connection</button><button class="btn dark" onclick="loadAll()">Load All Data</button></div>
+    </div>
+  </section>
+</main>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+let moviesCache=[],seriesCache=[],versionSha=null,announceSha=null;
+
+function log(msg){$("activityLog").textContent=new Date().toLocaleTimeString()+" - "+msg+"\\n"+$("activityLog").textContent}
+function toast(msg){$("toast").textContent=msg;$("toast").style.display="block";setTimeout(()=>$("toast").style.display="none",3000);log(msg)}
+function showSec(id,btn){document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));$(id)?.classList.add("active"); if(btn)btn.classList.add("active")}
+function openSec(id){const b=[...document.querySelectorAll(".nav button")].find(x=>(x.getAttribute("onclick")||"").includes("'"+id+"'"));showSec(id,b)}
+function cfg(){return{token:$("ghToken").value.trim(),owner:$("ghOwner").value.trim(),repo:$("ghRepo").value.trim(),branch:$("ghBranch").value.trim()||"main",folder:$("ghFolder").value.trim()||"database"}}
+function saveSettings(){const c=cfg();Object.keys(c).forEach(k=>localStorage.setItem("bm4_"+k,c[k]));toast("Settings saved")}
+function loadSettings(){["token","owner","repo","branch","folder"].forEach(k=>{const v=localStorage.getItem("bm4_"+k); if(v)$("gh"+k[0].toUpperCase()+k.slice(1)).value=v});$("tmdbKey").value=localStorage.getItem("tmdbKey")||""}
+function saveTmdbKey(){localStorage.setItem("tmdbKey",$("tmdbKey").value.trim());toast("TMDB key saved")}
+loadSettings();
+
+function apiPath(path){const c=cfg();return `https://api.github.com/repos/${c.owner}/${c.repo}/contents/${encodeURIComponent(path).replaceAll("%2F","/")}`}
+async function gh(path,method="GET",body=null){const c=cfg();let opt={method,headers:{Authorization:`Bearer ${c.token}`,Accept:"application/vnd.github+json"}};if(body){opt.headers["Content-Type"]="application/json";opt.body=JSON.stringify(body)}let res=await fetch(apiPath(path)+(method=="GET"?"?ref="+encodeURIComponent(c.branch):""),opt);if(!res.ok)throw new Error(method+" "+path+" failed "+res.status+" "+(await res.text()).slice(0,120));return await res.json()}
+function b64(s){return btoa(unescape(encodeURIComponent(s)))}
+function fromb64(s){return decodeURIComponent(escape(atob(s.replace(/\n/g,""))))}
+async function getJson(path){let j=await gh(path);return{json:JSON.parse(fromb64(j.content)),sha:j.sha,path:j.path}}
+async function putJson(path,data,sha=null){const c=cfg();let body={message:"Update "+path,content:b64(JSON.stringify(data,null,2)),branch:c.branch};if(sha)body.sha=sha;return await gh(path,"PUT",body)}
+async function delFile(path,sha){const c=cfg();return await gh(path,"DELETE",{message:"Delete "+path,sha,branch:c.branch})}
+async function testConnection(){try{saveSettings();const c=cfg();let r=await fetch(`https://api.github.com/repos/${c.owner}/${c.repo}`,{headers:{Authorization:`Bearer ${c.token}`,Accept:"application/vnd.github+json"}});if(!r.ok)throw new Error(r.status);$("connStatus").textContent="🟢 Connected";toast("GitHub connected")}catch(e){$("connStatus").textContent="🔴 Failed";toast(e.message)}}
+function safeName(n){return (n||Date.now()+"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")+".json"}
+
+function collect(prefix,fields){let o={};fields.forEach(f=>o[f]=$(prefix+f).value.trim());return o}
+function fill(prefix,data){Object.keys(data||{}).forEach(k=>{let el=$(prefix+k);if(el)el.value=data[k]??""})}
+function movieData(){return collect("m_",["Title","Poster","Backdrop","Year","Runtime","Vote","Language","Genres","Trailer","Link","Overview"])}
+function seriesData(){return collect("s_",["Title","Poster","Backdrop","NumberOfSeasons","NumberOfEpisodes","Year","Language","Genres","Trailer","Overview"])}
+function previewMovie(){$("moviePreview").textContent=JSON.stringify(movieData(),null,2)}
+function previewSeries(){$("seriesPreview").textContent=JSON.stringify(seriesData(),null,2)}
+function clearMovieForm(){fill("m_",{Title:"",Poster:"",Backdrop:"",Year:"",Runtime:"",Vote:"",Language:"",Genres:"",Trailer:"",Link:"",Overview:""});$("m_editPath").value="";previewMovie()}
+function clearSeriesForm(){fill("s_",{Title:"",Poster:"",Backdrop:"",NumberOfSeasons:"",NumberOfEpisodes:"",Year:"",Language:"",Genres:"",Trailer:"",Overview:""});$("s_editPath").value="";previewSeries()}
+
+async function saveMovie(){try{saveSettings();let c=cfg(),data=movieData();if(!data.Title)return toast("Title required");let path=$("m_editPath").value||`${c.folder}/movies/${safeName(data.Title)}`;let sha=null;try{sha=(await getJson(path)).sha}catch(e){}await putJson(path,data,sha);toast("Movie saved");loadMovies()}catch(e){toast(e.message)}}
+async function saveSeries(){try{saveSettings();let c=cfg(),data=seriesData();if(!data.Title)return toast("Title required");let path=$("s_editPath").value||`${c.folder}/series/${safeName(data.Title)}`;let sha=null;try{sha=(await getJson(path)).sha}catch(e){}await putJson(path,data,sha);toast("Series saved");loadSeries()}catch(e){toast(e.message)}}
+function card(data,type,path,sha){let img=data.Poster||data.poster||data.image_url||data.Image||"";let title=data.Title||data.title||data.name||"Untitled";let sub=[data.Year,data.Genres,data.Language].filter(Boolean).join(" • ");return `<div class="item data-card"><img class="poster" src="${img}" onerror="this.style.display='none'"><div class="info"><div class="title">${title}</div><div class="meta">${sub}</div><div class="mini"><button class="btn dark" onclick='editItem(${JSON.stringify(type)},${JSON.stringify(path)})'>Edit</button><button class="btn bad" onclick='deleteItem(${JSON.stringify(path)},${JSON.stringify(sha)},${JSON.stringify(type)})'>Delete</button></div></div></div>`}
+async function loadFolderJson(folder){let arr=[];let files=await gh(folder);for(const f of (Array.isArray(files)?files:[]).filter(x=>x.type==="file"&&x.name.endsWith(".json"))){try{let r=await getJson(f.path);arr.push({...r,data:r.json})}catch(e){}}return arr}
+async function loadMovies(){try{let c=cfg();$("moviesList").textContent="Loading...";let arr=await loadFolderJson(`${c.folder}/movies`);moviesCache=arr;$("statMovies").textContent=arr.length;$("moviesList").innerHTML=arr.map(x=>card(x.data,"movie",x.path,x.sha)).join("")||"No movies found";toast("Movies loaded")}catch(e){$("moviesList").textContent="Failed";toast(e.message)}}
+async function loadSeries(){try{let c=cfg();$("seriesList").textContent="Loading...";let arr=await loadFolderJson(`${c.folder}/series`);seriesCache=arr;$("statSeries").textContent=arr.length;$("seriesList").innerHTML=arr.map(x=>card(x.data,"series",x.path,x.sha)).join("")||"No series found";toast("Series loaded")}catch(e){$("seriesList").textContent="Failed";toast(e.message)}}
+async function editItem(type,path){try{let r=await getJson(path);if(type==="movie"){fill("m_",r.json);$("m_editPath").value=path;previewMovie();openSec("movies")}else{fill("s_",r.json);$("s_editPath").value=path;previewSeries();openSec("series")}toast("Loaded for edit")}catch(e){toast(e.message)}}
+async function deleteItem(path,sha,type){if(!confirm("Delete this file?"))return;try{await delFile(path,sha);toast("Deleted");type==="movie"?loadMovies():loadSeries()}catch(e){toast(e.message)}}
+function filterCards(){let q=$("globalSearch").value.toLowerCase();document.querySelectorAll(".data-card").forEach(c=>c.style.display=c.textContent.toLowerCase().includes(q)?"":"none")}
+
+async function browseFiles(){try{let path=$("filePath").value.trim()||"database";let files=await gh(path);$("fileList").innerHTML=(Array.isArray(files)?files:[]).map(f=>`<div class="file-row"><div>${f.type==="dir"?"📁":"📄"} ${f.name}<div class="meta">${f.path}</div></div><button class="btn dark" onclick='$("filePath").value=${JSON.stringify(f.path)};browseFiles()'>Open</button></div>`).join("")||"Empty"}catch(e){toast(e.message)}}
+async function loadEpisodeFiles(){try{let c=cfg();let files=await gh(`${c.folder}/episodes`);$("statEpisodes").textContent=Array.isArray(files)?files.length:0;$("episodesList").innerHTML=(Array.isArray(files)?files:[]).map(f=>`<div class="file-row"><div>📄 ${f.name}<div class="meta">${f.path}</div></div></div>`).join("")||"No episode files"}catch(e){toast(e.message)}}
+async function loadAll(){await testConnection();await loadMovies();await loadSeries();await loadEpisodeFiles()}
+
+function versionData(){return collect("v_",["Visibility","ForceUpdate","VersionName","VersionCode","Title","Description","DownloadLink"])}
+function announceData(){return collect("a_",["Visibility","Title","Message","Image","ButtonText","ButtonLink"])}
+async function loadVersion(){try{let r=await getJson("version.json");versionSha=r.sha;fill("v_",r.json);$("versionPreview").textContent=JSON.stringify(versionData(),null,2);toast("Version loaded")}catch(e){toast(e.message)}}
+async function saveVersion(){try{let data=versionData();let sha=versionSha;try{sha=(await getJson("version.json")).sha}catch(e){}await putJson("version.json",data,sha);$("versionPreview").textContent=JSON.stringify(data,null,2);toast("Version saved")}catch(e){toast(e.message)}}
+async function loadAnnouncement(){try{let r=await getJson("announcement.json");announceSha=r.sha;fill("a_",r.json);$("announcePreview").textContent=JSON.stringify(announceData(),null,2);toast("Announcement loaded")}catch(e){toast(e.message)}}
+async function saveAnnouncement(){try{let data=announceData();let sha=announceSha;try{sha=(await getJson("announcement.json")).sha}catch(e){}await putJson("announcement.json",data,sha);$("announcePreview").textContent=JSON.stringify(data,null,2);toast("Announcement saved")}catch(e){toast(e.message)}}
+
+async function importTmdb(){try{saveTmdbKey();let key=$("tmdbKey").value.trim(),id=$("tmdbId").value.trim(),type=$("tmdbType").value;if(!key||!id)return toast("TMDB key and ID required");let url=`https://api.themoviedb.org/3/${type}/${id}?api_key=${key}&append_to_response=videos,images`;let j=await (await fetch(url)).json();if(j.success===false)throw new Error(j.status_message);let img="https://image.tmdb.org/t/p/w500",back="https://image.tmdb.org/t/p/original";let data={Title:j.title||j.name||"",Poster:j.poster_path?img+j.poster_path:"",Backdrop:j.backdrop_path?back+j.backdrop_path:"",Year:(j.release_date||j.first_air_date||"").slice(0,4),Runtime:(j.runtime||j.episode_run_time?.[0]||"")+"",Vote:j.vote_average||"",Language:j.original_language||"",Genres:(j.genres||[]).map(x=>x.name).join(", "),Overview:j.overview||"",Trailer:""};let yt=(j.videos?.results||[]).find(v=>v.site==="YouTube");if(yt)data.Trailer="https://youtu.be/"+yt.key;if(type==="movie"){fill("m_",data);previewMovie();openSec("movies")}else{data.NumberOfSeasons=j.number_of_seasons||"";data.NumberOfEpisodes=j.number_of_episodes||"";fill("s_",data);previewSeries();openSec("series")}$("tmdbPreview").textContent=JSON.stringify(j,null,2);toast("TMDB imported")}catch(e){toast(e.message)}}
+</script>
+</body>
+</html>
