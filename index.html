@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BIDAMAX Series + Episodes Admin</title>
+<style>
+:root{--bg:#07080d;--card:#111520;--card2:#171b27;--line:#2a3040;--text:#fff;--muted:#aeb4c4;--red:#e50914;--red2:#8b0008;--green:#16a34a;--blue:#2563eb;--warn:#f59e0b}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#33040b,#07080d 42%);color:var(--text);font-family:Arial,system-ui,sans-serif}.wrap{max-width:1050px;margin:auto;padding:16px}.top{display:flex;gap:12px;align-items:center;margin:6px 0 18px}.logo{width:58px;height:58px;border-radius:18px;background:linear-gradient(135deg,var(--red),#650008);display:grid;place-items:center;font-weight:900;font-size:30px;box-shadow:0 0 25px #e5091455}h1{font-size:30px;line-height:1.05;margin:0}.sub{color:var(--muted);margin:5px 0 0;font-size:15px}.tabs,.row{display:flex;gap:10px;flex-wrap:wrap}.tab,button{border:1px solid var(--line);background:var(--card2);color:#fff;border-radius:16px;padding:12px 15px;font-weight:800;font-size:15px;cursor:pointer}.tab.active,button.red{background:linear-gradient(135deg,var(--red),var(--red2));border-color:#ff323c}.green{background:#063b18;border-color:#147a35}.blue{background:#09245b;border-color:#245ce5}.warn{background:#3d2703;border-color:#9a6508}.card{background:linear-gradient(180deg,#121722,#0d1018);border:1px solid var(--line);border-radius:24px;padding:16px;margin:14px 0;box-shadow:0 10px 28px #0005}label{display:block;color:var(--muted);font-weight:800;margin:12px 0 7px}input,textarea,select{width:100%;border:1px solid var(--line);background:#07090f;color:#fff;border-radius:15px;padding:13px;font-size:15px}textarea{min-height:96px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{background:#090b12;border:1px solid var(--line);border-radius:20px;padding:18px}.stat b{font-size:30px}.view{display:none}.view.active{display:block}.item{display:grid;grid-template-columns:86px 1fr;gap:12px;background:#0a0d15;border:1px solid var(--line);border-radius:18px;padding:10px;margin:10px 0}.poster{width:86px;height:122px;border-radius:12px;object-fit:cover;background:#202431}.wideposter{height:86px}.lines b{font-size:18px}.lines p{margin:6px 0;color:var(--muted);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}.actions button{padding:9px 12px;border-radius:12px;font-size:13px}.season{padding:12px;border:1px solid var(--line);border-radius:15px;background:#090b12;margin:8px 0}.season.active{border-color:#e50914;background:#2a0710}.log{white-space:pre-wrap;background:#05060a;border:1px solid var(--line);border-radius:16px;padding:12px;max-height:230px;overflow:auto;color:#d7d9e3}.hide{display:none}.small{font-size:13px;color:var(--muted)}.modal{position:fixed;inset:0;background:#000b;display:none;align-items:flex-end;z-index:99}.modal.show{display:flex}.sheet{background:#111520;border:1px solid var(--line);border-radius:24px 24px 0 0;padding:18px;width:100%;max-height:90vh;overflow:auto}.pill{display:inline-block;border:1px solid var(--line);background:#202432;color:#dbe0ef;border-radius:999px;padding:5px 9px;font-size:12px;margin-right:5px}.split{display:grid;grid-template-columns:360px 1fr;gap:14px}.danger{border-color:#7f1d1d;background:#20070b}.stickybar{position:sticky;bottom:0;background:#07080dee;backdrop-filter:blur(10px);padding:10px;border-top:1px solid var(--line);margin:14px -16px -16px}@media(max-width:760px){.grid,.stats,.split{grid-template-columns:1fr}.item{grid-template-columns:74px 1fr}.poster{width:74px;height:108px}.wideposter{height:74px}h1{font-size:25px}.wrap{padding:14px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><div class="logo">B</div><div><h1>BIDAMAX Series Admin</h1><p class="sub">Series only + seasons/episodes edit/delete. Lazy load per TMDB ID para hindi mag-freeze.</p></div></div>
+  <div class="tabs">
+    <button class="tab active" onclick="showView('dash')">Dashboard</button>
+    <button class="tab" onclick="showView('add')">Add Series</button>
+    <button class="tab" onclick="showView('manage')">Manage Series</button>
+    <button class="tab" onclick="showView('settings')">Settings</button>
+  </div>
+
+  <section id="dash" class="view active">
+    <div class="card">
+      <div class="stats">
+        <div class="stat"><b id="seriesCount">0</b><br><span>Series loaded</span></div>
+        <div class="stat"><b id="seasonCount">-</b><br><span>Selected seasons</span></div>
+        <div class="stat"><b id="episodeCount">-</b><br><span>Selected episodes</span></div>
+      </div>
+      <div class="row" style="margin-top:14px"><button class="red" onclick="loadSeries()">Reload Series</button><button class="green" onclick="publishSeries()">Publish Series</button><button onclick="showView('settings')">Settings</button></div>
+    </div>
+    <div class="card"><h2>Loader Log</h2><div id="log" class="log">Ready.</div></div>
+  </section>
+
+  <section id="settings" class="view">
+    <div class="card"><h2>GitHub Settings</h2>
+      <div class="grid">
+        <div><label>GitHub Token</label><input id="ghToken" type="password" placeholder="github_pat... / classic token"></div>
+        <div><label>Owner</label><input id="ghOwner" value="mlbb-injector"></div>
+        <div><label>Repository</label><input id="ghRepo" value="maui"></div>
+        <div><label>Branch</label><input id="ghBranch" value="main"></div>
+        <div><label>Series JSON path</label><input id="seriesPath" value="database/series.json"></div>
+        <div><label>Seasons folder</label><input id="seasonsDir" value="database/seasons"></div>
+        <div><label>Episodes folder</label><input id="episodesDir" value="database/episodes"></div>
+        <div><label>TMDB API Key</label><input id="tmdbKey" placeholder="TMDB v3 API key"></div>
+        <div><label>TMDB Language</label><input id="tmdbLang" value="en-US"></div>
+      </div>
+      <div class="row" style="margin-top:14px"><button class="red" onclick="saveSettings()">Save Settings</button><button onclick="testGitHub()">Test GitHub</button><button onclick="copyRawBase()">Copy Raw Base</button></div>
+      <p class="small">Expected files: <code>database/series.json</code>, <code>database/seasons/TMDB_ID.json</code>, <code>database/episodes/TMDB_ID.json</code></p>
+    </div>
+  </section>
+
+  <section id="add" class="view">
+    <div class="card"><h2>Add/Search Series by TMDB</h2>
+      <label>TMDB ID or Title</label><input id="tmdbQuery" placeholder="example: 129600 or Dream High">
+      <div class="row" style="margin-top:12px"><button class="red" onclick="tmdbSearch()">Search</button><button onclick="clearPreview()">Clear</button></div>
+    </div>
+    <div id="tmdbResults" class="card hide"><h2>Results</h2><div id="resultList"></div></div>
+    <div id="previewCard" class="card hide"><h2>Preview</h2><div id="previewBox"></div><div class="row"><button class="green" onclick="addPreviewSeries()">Add to Series List</button><button class="blue" onclick="generateSelectedFiles()">Generate Seasons + Episodes & Save</button></div></div>
+  </section>
+
+  <section id="manage" class="view">
+    <div class="card"><h2>Series Manager</h2><label>Search</label><input id="searchBox" oninput="renderSeries()" placeholder="Search title / TMDB ID"><div class="row" style="margin-top:12px"><button class="red" onclick="loadSeries()">Reload from GitHub</button><button class="green" onclick="publishSeries()">Publish Series</button></div></div>
+    <div id="seriesList"></div>
+  </section>
+
+  <section id="editor" class="view">
+    <div class="card"><button onclick="showView('manage')">← Back</button><h2 id="editTitle">Edit Series</h2>
+      <div class="grid"><div><label>Title</label><input id="eTitle"></div><div><label>TMDB ID</label><input id="eTmdb"></div><div><label>Year</label><input id="eYear"></div><div><label>Language</label><input id="eLang"></div><div><label>Poster</label><input id="ePoster"></div><div><label>Backdrop</label><input id="eBackdrop"></div><div><label>Logo</label><input id="eLogo"></div><div><label>Vote</label><input id="eVote"></div></div>
+      <label>Genres</label><input id="eGenres"><label>Overview</label><textarea id="eOverview"></textarea>
+      <div class="stickybar"><div class="row"><button class="green" onclick="saveEditorSeries()">Save Series Local</button><button class="red" onclick="deleteCurrentSeries()">Delete Series</button><button class="blue" onclick="loadSelectedSeasonsEpisodes()">Load Seasons/Episodes</button><button class="green" onclick="publishSelectedFiles()">Publish Seasons/Episodes</button></div></div>
+    </div>
+    <div class="split">
+      <div class="card"><h2>Available Seasons</h2><div id="seasonList">Click Load Seasons/Episodes.</div><div class="row"><button class="blue" onclick="addSeasonManual()">+ Add Season</button></div></div>
+      <div class="card"><h2 id="epHeader">Episodes</h2><div id="episodeList">Select season.</div><div class="row"><button class="blue" onclick="addEpisodeManual()">+ Add Episode</button></div></div>
+    </div>
+  </section>
+</div>
+
+<div id="editModal" class="modal"><div class="sheet"><h2 id="modalTitle">Edit</h2><div id="modalBody"></div><div class="row" style="margin-top:12px"><button class="green" onclick="saveModalEdit()">Save Local</button><button onclick="closeModal()">Cancel</button></div></div></div>
+
+<script>
+'use strict';
+let S={token:'',owner:'mlbb-injector',repo:'maui',branch:'main',seriesPath:'database/series.json',seasonsDir:'database/seasons',episodesDir:'database/episodes',tmdbKey:'',tmdbLang:'en-US'};
+let seriesData=[], seriesSha=null, currentIndex=-1, currentSeasonNo=null, seasonsData=[], episodesData=[], seasonsSha=null, episodesSha=null, previewSeries=null, modalType='', modalIndex=-1;
+const $=id=>document.getElementById(id);
+function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
+function log(x){$('log').textContent += '\n'+x; $('log').scrollTop=$('log').scrollHeight;}
+function showView(id){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));$(id).classList.add('active');document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));[...document.querySelectorAll('.tab')].find(b=>b.getAttribute('onclick')?.includes("'"+id+"'"))?.classList.add('active');}
+function loadSettings(){try{let raw=localStorage.getItem('bidaSeriesAdminEpisodes'); if(raw) Object.assign(S,JSON.parse(raw));}catch(e){} ['ghToken','ghOwner','ghRepo','ghBranch','seriesPath','seasonsDir','episodesDir','tmdbKey','tmdbLang'].forEach(id=>{let key=id.replace('gh','').toLowerCase(); if(id==='ghToken')$(id).value=S.token||''; if(id==='ghOwner')$(id).value=S.owner||''; if(id==='ghRepo')$(id).value=S.repo||''; if(id==='ghBranch')$(id).value=S.branch||''; if(S[id]!==undefined)$(id).value=S[id]||'';});}
+function saveSettings(){S.token=$('ghToken').value.trim();S.owner=$('ghOwner').value.trim();S.repo=$('ghRepo').value.trim();S.branch=$('ghBranch').value.trim();S.seriesPath=$('seriesPath').value.trim();S.seasonsDir=$('seasonsDir').value.trim().replace(/\/$/,'');S.episodesDir=$('episodesDir').value.trim().replace(/\/$/,'');S.tmdbKey=$('tmdbKey').value.trim();S.tmdbLang=$('tmdbLang').value.trim()||'en-US';localStorage.setItem('bidaSeriesAdminEpisodes',JSON.stringify(S));log('Settings saved.');}
+function ghHeaders(){let h={'Accept':'application/vnd.github+json'}; if(S.token) h.Authorization='Bearer '+S.token; return h;}
+function apiUrl(path){return `https://api.github.com/repos/${S.owner}/${S.repo}/contents/${path}?ref=${encodeURIComponent(S.branch)}`;}
+function rawUrl(path){return `https://raw.githubusercontent.com/${S.owner}/${S.repo}/${S.branch}/${path}`;}
+async function getJson(path){saveSettings();let r=await fetch(apiUrl(path),{headers:ghHeaders()});let sha=null, txt='';if(r.ok){let j=await r.json();sha=j.sha||null;if(j.content){txt=decodeURIComponent(escape(atob(String(j.content).replace(/\n/g,''))));}else if(j.download_url){let rr=await fetch(j.download_url+'&x=' + Date.now());txt=await rr.text();}}else{let rr=await fetch(rawUrl(path)+'?x='+Date.now());if(!rr.ok)throw new Error(path+' HTTP '+r.status+' / raw '+rr.status);txt=await rr.text();}if(!txt.trim())throw new Error(path+' is empty');return {data:JSON.parse(txt),sha};}
+function toBase64Unicode(str){return btoa(unescape(encodeURIComponent(str)));}
+async function putJson(path,data,sha,msg){saveSettings();if(!S.token)throw new Error('Missing GitHub token');let body={message:msg||('Update '+path),content:toBase64Unicode(JSON.stringify(data,null,2)),branch:S.branch};if(sha)body.sha=sha;let r=await fetch(`https://api.github.com/repos/${S.owner}/${S.repo}/contents/${path}`,{method:'PUT',headers:{...ghHeaders(),'Content-Type':'application/json'},body:JSON.stringify(body)});let j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.message||('GitHub PUT '+r.status));return j;}
+function normalizeJson(d){if(Array.isArray(d))return d;if(d&&Array.isArray(d.series))return d.series;if(d&&Array.isArray(d.movies))return d.movies;if(d&&Array.isArray(d.data))return d.data;if(d&&Array.isArray(d.seasons))return d.seasons;if(d&&Array.isArray(d.episodes))return d.episodes;if(d&&typeof d==='object')return Object.values(d);return [];}
+function titleOf(s){return s.Title||s.title||s.name||s.Name||'Untitled';}
+function tmdbOf(s){return s.tmdbID||s.tmdbId||s.tmdb_id||s.id||s.ID||'';}
+function imgUrl(v,size='w500'){v=String(v||'').trim();if(!v)return '';if(v.startsWith('http'))return v;if(v.startsWith('/'))return `https://image.tmdb.org/t/p/${size}${v}`;return v;}
+function yearOf(s){return s.Year||s.year||String(s.first_air_date||s.release_date||'').slice(0,4)||'';}
+function seasonNo(x){return Number(x.season_number||x.Season||x.season||0);}
+function epNo(x){return Number(x.episode_number||x.Episode||x.episode||0);}
+async function testGitHub(){try{saveSettings();let r=await fetch(`https://api.github.com/repos/${S.owner}/${S.repo}`,{headers:ghHeaders()});alert(r.ok?'GitHub OK':'GitHub error '+r.status);log('GitHub test: '+r.status);}catch(e){alert(e.message);}}
+function copyRawBase(){navigator.clipboard?.writeText(`https://raw.githubusercontent.com/${S.owner}/${S.repo}/${S.branch}/`);alert('Copied raw base.');}
+async function loadSeries(){try{$('log').textContent='Loading series...';let res=await getJson(S.seriesPath);seriesData=normalizeJson(res.data);seriesSha=res.sha;$('seriesCount').textContent=seriesData.length;renderSeries();log(`Loaded ${S.seriesPath}: ${seriesData.length}`);showView('manage');}catch(e){alert('Load series error: '+e.message);log('ERROR: '+e.message);}}
+function renderSeries(){let q=($('searchBox')?.value||'').toLowerCase();let html='';seriesData.forEach((s,i)=>{let title=titleOf(s), id=tmdbOf(s); if(q && !(title+' '+id).toLowerCase().includes(q))return;html+=`<div class="item"><img class="poster" src="${imgUrl(s.Poster||s.poster_path||s.image||s.Backdrop)}" onerror="this.src='';this.style.display='none'"><div class="lines"><b>${esc(title)}</b><p>${esc(s.Overview||s.overview||'No overview')}</p><span class="pill">TMDB: ${esc(id)}</span><span class="pill">${esc(yearOf(s))}</span><div class="actions"><button class="blue" onclick="openEditor(${i})">Open Edit</button><button class="red" onclick="deleteSeries(${i})">Delete</button></div></div></div>`;});$('seriesList').innerHTML=html||'<div class="card">No series found.</div>';}
+async function publishSeries(){try{let r=await putJson(S.seriesPath,seriesData,seriesSha,'Update series.json');seriesSha=r.content?.sha||seriesSha;alert('Published series.json');log('Published series.json');}catch(e){alert('Publish error: '+e.message);log('ERROR: '+e.message);}}
+function openEditor(i){currentIndex=i;let s=seriesData[i];$('editTitle').textContent='Edit: '+titleOf(s);$('eTitle').value=titleOf(s);$('eTmdb').value=tmdbOf(s);$('eYear').value=yearOf(s);$('eLang').value=s.Language||s.original_language||'';$('ePoster').value=s.Poster||s.poster_path||'';$('eBackdrop').value=s.Backdrop||s.backdrop_path||'';$('eLogo').value=s.Logo||s.logo_path||'';$('eVote').value=s.Vote||s.VoteAverage||s.vote_average||'';$('eGenres').value=s.Genres||s.genres||'';$('eOverview').value=s.Overview||s.overview||'';seasonsData=[];episodesData=[];seasonsSha=null;episodesSha=null;currentSeasonNo=null;$('seasonList').textContent='Click Load Seasons/Episodes.';$('episodeList').textContent='Select season.';$('seasonCount').textContent='-';$('episodeCount').textContent='-';showView('editor');}
+function saveEditorSeries(){if(currentIndex<0)return;let s=seriesData[currentIndex];Object.assign(s,{Title:$('eTitle').value,tmdbID:$('eTmdb').value,Year:$('eYear').value,Language:$('eLang').value,Poster:$('ePoster').value,Backdrop:$('eBackdrop').value,Logo:$('eLogo').value,Vote:$('eVote').value,Genres:$('eGenres').value,Overview:$('eOverview').value});renderSeries();alert('Saved locally. Click Publish Series para ma-save sa GitHub.');}
+function deleteSeries(i){if(confirm('Delete this series from local list?')){seriesData.splice(i,1);$('seriesCount').textContent=seriesData.length;renderSeries();}}
+function deleteCurrentSeries(){if(currentIndex>-1&&confirm('Delete current series from local list?')){deleteSeries(currentIndex);currentIndex=-1;showView('manage');}}
+async function loadSelectedSeasonsEpisodes(){let id=$('eTmdb').value.trim();if(!id)return alert('No TMDB ID');try{let sr=await getJson(`${S.seasonsDir}/${id}.json`);seasonsData=normalizeJson(sr.data);seasonsSha=sr.sha;log(`Loaded seasons/${id}.json: ${seasonsData.length}`);}catch(e){seasonsData=[];seasonsSha=null;log('No seasons file yet: '+e.message);}try{let er=await getJson(`${S.episodesDir}/${id}.json`);episodesData=normalizeJson(er.data);episodesSha=er.sha;log(`Loaded episodes/${id}.json: ${episodesData.length}`);}catch(e){episodesData=[];episodesSha=null;log('No episodes file yet: '+e.message);}$('seasonCount').textContent=seasonsData.length;$('episodeCount').textContent=episodesData.length;renderSeasons();renderEpisodes(null);}
+function renderSeasons(){let html='';seasonsData.sort((a,b)=>seasonNo(a)-seasonNo(b)).forEach((s,i)=>{let sn=seasonNo(s);let ec=episodesData.filter(e=>seasonNo(e)===sn).length;html+=`<div class="season ${currentSeasonNo===sn?'active':''}" onclick="selectSeason(${sn})"><b>Season ${sn}</b><p class="small">${esc(s.name||s.Name||'')} • ${ec} episodes</p><div class="actions"><button onclick="event.stopPropagation();editSeason(${i})">Edit</button><button class="red" onclick="event.stopPropagation();deleteSeason(${i})">Delete</button></div></div>`;});$('seasonList').innerHTML=html||'No seasons loaded.';}
+function selectSeason(n){currentSeasonNo=Number(n);renderSeasons();renderEpisodes(currentSeasonNo);}
+function renderEpisodes(n){let arr=n==null?[]:episodesData.filter(e=>seasonNo(e)===Number(n));let html='';arr.sort((a,b)=>epNo(a)-epNo(b)).forEach(e=>{let i=episodesData.indexOf(e);html+=`<div class="item"><img class="poster wideposter" src="${imgUrl(e.still_path||e.image||e.Poster||e.Backdrop)}" onerror="this.src='';this.style.display='none'"><div class="lines"><b>EP ${epNo(e)}: ${esc(e.name||e.Name||'Untitled')}</b><p>${esc(e.overview||e.Overview||'No overview')}</p><span class="pill">${esc(e.air_date||'no date')}</span><span class="pill">link: ${e.link||e.Link||e.url?'yes':'no'}</span><div class="actions"><button onclick="editEpisode(${i})">Edit</button><button class="red" onclick="deleteEpisode(${i})">Delete</button></div></div></div>`;});$('epHeader').textContent=n==null?'Episodes':'Season '+n+' Episodes';$('episodeList').innerHTML=html||'No episodes for this season.';}
+function openModal(){ $('editModal').classList.add('show'); }
+function closeModal(){ $('editModal').classList.remove('show'); }
+function editSeason(i){modalType='season';modalIndex=i;let s=seasonsData[i];$('modalTitle').textContent='Edit Season';$('modalBody').innerHTML=`<div class="grid"><div><label>Season Number</label><input id="mSeason" value="${esc(seasonNo(s))}"></div><div><label>Episode Count</label><input id="mCount" value="${esc(s.episode_count||'')}"></div></div><label>Name</label><input id="mName" value="${esc(s.name||s.Name||'')}"><label>Poster</label><input id="mPoster" value="${esc(s.poster_path||s.Poster||'')}"><label>Overview</label><textarea id="mOverview">${esc(s.overview||s.Overview||'')}</textarea>`;openModal();}
+function editEpisode(i){modalType='episode';modalIndex=i;let e=episodesData[i];$('modalTitle').textContent='Edit Episode';$('modalBody').innerHTML=`<div class="grid"><div><label>Season</label><input id="mSeason" value="${esc(seasonNo(e))}"></div><div><label>Episode</label><input id="mEpisode" value="${esc(epNo(e))}"></div></div><label>Name</label><input id="mName" value="${esc(e.name||e.Name||'')}"><label>Air date</label><input id="mAir" value="${esc(e.air_date||'')}"><label>Video Link</label><input id="mLink" value="${esc(e.link||e.Link||e.url||'')}"><label>Still/Image</label><input id="mStill" value="${esc(e.still_path||e.image||e.Poster||'')}"><label>Overview</label><textarea id="mOverview">${esc(e.overview||e.Overview||'')}</textarea>`;openModal();}
+function saveModalEdit(){if(modalType==='season'){let s=seasonsData[modalIndex];s.season_number=Number($('mSeason').value)||0;s.name=$('mName').value;s.poster_path=$('mPoster').value;s.overview=$('mOverview').value;if($('mCount').value)s.episode_count=Number($('mCount').value)||$('mCount').value;renderSeasons();}else if(modalType==='episode'){let e=episodesData[modalIndex];e.season_number=Number($('mSeason').value)||0;e.episode_number=Number($('mEpisode').value)||0;e.name=$('mName').value;e.air_date=$('mAir').value;e.link=$('mLink').value;e.still_path=$('mStill').value;e.overview=$('mOverview').value;renderEpisodes(currentSeasonNo);renderSeasons();}closeModal();alert('Saved locally. Click Publish Seasons/Episodes para ma-save.');}
+function addSeasonManual(){let next=(seasonsData.reduce((m,s)=>Math.max(m,seasonNo(s)),0)+1)||1;seasonsData.push({season_number:next,name:'Season '+next,overview:'',poster_path:'',episode_count:0});$('seasonCount').textContent=seasonsData.length;renderSeasons();}
+function addEpisodeManual(){let sn=currentSeasonNo||1;let next=(episodesData.filter(e=>seasonNo(e)===sn).reduce((m,e)=>Math.max(m,epNo(e)),0)+1)||1;episodesData.push({season_number:sn,episode_number:next,name:'Episode '+next,overview:'',air_date:'',link:'',still_path:''});$('episodeCount').textContent=episodesData.length;renderEpisodes(sn);renderSeasons();}
+function deleteSeason(i){if(confirm('Delete season and its episodes locally?')){let sn=seasonNo(seasonsData[i]);seasonsData.splice(i,1);episodesData=episodesData.filter(e=>seasonNo(e)!==sn);$('seasonCount').textContent=seasonsData.length;$('episodeCount').textContent=episodesData.length;if(currentSeasonNo===sn)currentSeasonNo=null;renderSeasons();renderEpisodes(currentSeasonNo);}}
+function deleteEpisode(i){if(confirm('Delete episode locally?')){episodesData.splice(i,1);$('episodeCount').textContent=episodesData.length;renderEpisodes(currentSeasonNo);renderSeasons();}}
+async function publishSelectedFiles(){try{let id=$('eTmdb').value.trim();if(!id)return alert('No TMDB ID');let sr=await putJson(`${S.seasonsDir}/${id}.json`,seasonsData,seasonsSha,'Update seasons '+id);let er=await putJson(`${S.episodesDir}/${id}.json`,episodesData,episodesSha,'Update episodes '+id);seasonsSha=sr.content?.sha||seasonsSha;episodesSha=er.content?.sha||episodesSha;alert('Published seasons and episodes.');log('Published seasons/episodes for '+id);}catch(e){alert('Publish seasons/episodes error: '+e.message);log('ERROR: '+e.message);}}
+async function tmdb(path){saveSettings();if(!S.tmdbKey)throw new Error('Missing TMDB API key');let sep=path.includes('?')?'&':'?';let r=await fetch('https://api.themoviedb.org/3'+path+sep+'api_key='+encodeURIComponent(S.tmdbKey)+'&language='+encodeURIComponent(S.tmdbLang));let j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.status_message||('TMDB '+r.status));return j;}
+async function tmdbSearch(){let q=$('tmdbQuery').value.trim();if(!q)return;try{let results=[];if(/^\d+$/.test(q)){results=[await tmdb('/tv/'+q)];}else{let j=await tmdb('/search/tv?query='+encodeURIComponent(q));results=j.results||[];}$('tmdbResults').classList.remove('hide');$('resultList').innerHTML=results.map(r=>`<div class="item"><img class="poster" src="${imgUrl(r.poster_path)}"><div class="lines"><b>${esc(r.name)}</b><p>${esc(r.overview||'')}</p><span class="pill">TMDB: ${r.id}</span><span class="pill">${esc(r.first_air_date||'')}</span><div class="actions"><button class="blue" onclick="previewTmdb(${r.id})">Preview</button></div></div></div>`).join('')||'No results';}catch(e){alert(e.message);}}
+async function previewTmdb(id){try{let r=await tmdb('/tv/'+id+'?append_to_response=images,videos');previewSeries={Title:r.name||'',tmdbID:r.id,Year:(r.first_air_date||'').slice(0,4),Language:r.original_language||'',Poster:r.poster_path||'',Backdrop:r.backdrop_path||'',Logo:(r.images?.logos?.[0]?.file_path||''),Overview:r.overview||'',Genres:(r.genres||[]).map(g=>g.name).join(', '),Vote:r.vote_average||'',NumberOfSeasons:r.number_of_seasons||0,NumberOfEpisodes:r.number_of_episodes||0};$('previewCard').classList.remove('hide');$('previewBox').innerHTML=`<div class="item"><img class="poster" src="${imgUrl(previewSeries.Poster)}"><div class="lines"><b>${esc(previewSeries.Title)}</b><p>${esc(previewSeries.Overview)}</p><span class="pill">${previewSeries.NumberOfSeasons} seasons</span><span class="pill">${previewSeries.NumberOfEpisodes} episodes</span></div></div>`;}catch(e){alert(e.message);}}
+function addPreviewSeries(){if(!previewSeries)return;let exists=seriesData.some(s=>String(tmdbOf(s))===String(previewSeries.tmdbID));if(exists&&!confirm('Already exists. Add again?'))return;seriesData.unshift(previewSeries);$('seriesCount').textContent=seriesData.length;renderSeries();alert('Added locally. Click Publish Series.');}
+async function generateSelectedFiles(){if(!previewSeries)return;try{let tv=await tmdb('/tv/'+previewSeries.tmdbID);let ss=[],eps=[];for(let s of (tv.seasons||[])){let sn=seasonNo(s);if(sn===0)continue;ss.push(s);let sj=await tmdb('/tv/'+previewSeries.tmdbID+'/season/'+sn);(sj.episodes||[]).forEach(e=>eps.push({...e,season_number:sn,link:e.link||''}));log('Generated season '+sn);}let id=previewSeries.tmdbID;let sr=await putJson(`${S.seasonsDir}/${id}.json`,ss,null,'Create/update seasons '+id);let er=await putJson(`${S.episodesDir}/${id}.json`,eps,null,'Create/update episodes '+id);alert('Saved seasons/episodes: '+ss.length+' / '+eps.length);log('Generated files for '+id);}catch(e){alert('Generate error: '+e.message);log('ERROR: '+e.message);}}
+function clearPreview(){previewSeries=null;$('tmdbResults').classList.add('hide');$('previewCard').classList.add('hide');$('resultList').innerHTML='';$('previewBox').innerHTML='';}
+window.addEventListener('error',e=>{log('JS ERROR: '+e.message+' line '+e.lineno);});
+loadSettings();
+loadSeries();
+</script>
+</body>
+</html>
